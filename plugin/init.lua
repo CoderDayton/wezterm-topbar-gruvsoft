@@ -77,6 +77,7 @@ function M.apply_to_config(config, opts)
     config.tab_bar_at_bottom = false
     config.use_fancy_tab_bar = true
     config.hide_tab_bar_if_only_one_tab = false
+    config.tab_max_width = opts.tab_max_width or 40
     config.window_decorations = opts.window_decorations or "TITLE | RESIZE"
 
     -- Gentle dimming for inactive panes; reduce bright “pop” for bolds
@@ -132,13 +133,18 @@ function M.apply_to_config(config, opts)
         if not title or #title == 0 then
             title = tab.active_pane.title
         end
+
+        if #title > max_width - 12 then
+            title = string.sub(title, 1, max_width - 15) .. "..."
+        end
+
         local idx = tostring(tab.tab_index + 1)
         local bg = tab.is_active and M.scheme.tab_bar.active_tab.bg_color or M.scheme.tab_bar.background
         local fg = tab.is_active and M.scheme.tab_bar.active_tab.fg_color or M.scheme.tab_bar.inactive_tab.fg_color
         return {
             { Background = { Color = bg } },
             { Foreground = { Color = fg } },
-            { Text = "  " .. idx .. "  " .. title .. "  " },
+            { Text = "    " .. idx .. "    " .. title .. "    " }
         }
     end)
 
